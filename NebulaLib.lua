@@ -2,123 +2,122 @@
 local Nebula = {}
 Nebula.__index = Nebula
 
-function Nebula:CreateWindow(settings)
+function Nebula:CreateWindow()
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "NebulaUI"
 	screenGui.ResetOnSpawn = false
 	screenGui.Parent = game:GetService("CoreGui")
 
+	-- Main Window
 	local main = Instance.new("Frame")
 	main.Name = "MainWindow"
-	main.Size = settings.Size or UDim2.new(0, 500, 0, 300)
-	main.Position = UDim2.new(0.5, -main.Size.X.Offset/2, 0.5, -main.Size.Y.Offset/2)
+	main.Size = UDim2.new(0, 550, 0, 375)
+	main.Position = UDim2.new(0.5, -275, 0.5, -187)
 	main.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 	main.BorderSizePixel = 0
 	main.AnchorPoint = Vector2.new(0.5, 0.5)
 	main.ClipsDescendants = true
 	main.Parent = screenGui
 
-	-- Add this inside your CreateWindow function, right after creating `main`:
-
-local topBar = Instance.new("Frame")
-topBar.Name = "TopBar"
-topBar.Size = UDim2.new(1, 0, 0, 40)
-topBar.BackgroundTransparency = 1
-topBar.Parent = main
-
--- Button base styling helper
-local function createTopButton(name, symbol, position)
-	local btn = Instance.new("TextButton")
-	btn.Name = name
-	btn.Text = symbol
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 14
-	btn.TextColor3 = Color3.fromRGB(200, 200, 255)
-	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
-	btn.Size = UDim2.new(0, 30, 0, 30)
-	btn.Position = position
-	btn.AnchorPoint = Vector2.new(1, 0.5)
-	btn.BackgroundTransparency = 0.1
-	btn.BorderSizePixel = 0
-	btn.AutoButtonColor = true
-	btn.Parent = topBar
-
-	local corner = Instance.new("UICorner", btn)
-	corner.CornerRadius = UDim.new(0, 6)
-
-	return btn
-end
-
--- Create the buttons
-local padding = 10
-local closeBtn = createTopButton("CloseButton", "X", UDim2.new(1, -padding, 0.5, 0))
-local minimizeBtn = createTopButton("MinimizeButton", "_", UDim2.new(1, -padding - 35, 0.5, 0))
-local restoreBtn = createTopButton("RestoreButton", "☐", UDim2.new(1, -padding - 70, 0.5, 0))
-
--- Functionality
-closeBtn.MouseButton1Click:Connect(function()
-	main.Visible = false -- or screenGui:Destroy() to fully close
-end)
-
-minimizeBtn.MouseButton1Click:Connect(function()
-	main.Visible = false -- optional: toggle button elsewhere to show again
-end)
-
-local originalSize = main.Size
-local originalPosition = main.Position
-local isRestored = true
-
-restoreBtn.MouseButton1Click:Connect(function()
-	if isRestored then
-		main.Size = UDim2.new(0, 300, 0, 200)
-		restoreBtn.Text = "🗖" -- visually indicate "maximize"
-	else
-		main.Size = originalSize
-		main.Position = originalPosition
-		restoreBtn.Text = "☐" -- back to restore icon
-	end
-	isRestored = not isRestored
-end)
-
 	local uicorner = Instance.new("UICorner", main)
 	uicorner.CornerRadius = UDim.new(0, 12)
 
+	-- Drop Shadow
 	local dropShadow = Instance.new("ImageLabel")
 	dropShadow.Name = "Shadow"
 	dropShadow.Size = UDim2.new(1, 60, 1, 60)
 	dropShadow.Position = UDim2.new(0, -30, 0, -30)
 	dropShadow.BackgroundTransparency = 1
-	dropShadow.Image = "rbxassetid://1316045217" -- soft shadow
+	dropShadow.Image = "rbxassetid://1316045217"
 	dropShadow.ImageTransparency = 0.5
 	dropShadow.ZIndex = 0
 	dropShadow.Parent = main
 
+	-- Title Bar
+	local titleBar = Instance.new("Frame")
+	titleBar.Name = "TitleBar"
+	titleBar.Size = UDim2.new(1, 0, 0, 40)
+	titleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+	titleBar.BorderSizePixel = 0
+	titleBar.Parent = main
+
+	local titleCorner = Instance.new("UICorner", titleBar)
+	titleCorner.CornerRadius = UDim.new(0, 12)
+
 	local title = Instance.new("TextLabel")
-	title.Text = settings.Name or "Nebula Window"
+	title.Text = "Nebula UI Example"
 	title.Font = Enum.Font.GothamBold
-	title.TextSize = 20
+	title.TextSize = 18
 	title.TextColor3 = Color3.fromRGB(200, 200, 255)
 	title.BackgroundTransparency = 1
-	title.Position = UDim2.new(0, 10, 0, 8)
-	title.Size = UDim2.new(1, -20, 0, 25)
+	title.Position = UDim2.new(0, 10, 0, 4)
+	title.Size = UDim2.new(1, -100, 0, 20)
 	title.TextXAlignment = Enum.TextXAlignment.Left
-	title.Parent = main
+	title.Parent = titleBar
 
 	local subtitle = Instance.new("TextLabel")
-	subtitle.Text = settings.Subtitle or ""
+	subtitle.Text = "by ttvkaiser"
 	subtitle.Font = Enum.Font.Gotham
-	subtitle.TextSize = 14
-	subtitle.TextColor3 = Color3.fromRGB(150, 150, 200)
+	subtitle.TextSize = 13
+	subtitle.TextColor3 = Color3.fromRGB(140, 140, 200)
 	subtitle.BackgroundTransparency = 1
-	subtitle.Position = UDim2.new(0, 10, 0, 30)
-	subtitle.Size = UDim2.new(1, -20, 0, 20)
+	subtitle.Position = UDim2.new(0, 10, 0, 22)
+	subtitle.Size = UDim2.new(1, -100, 0, 16)
 	subtitle.TextXAlignment = Enum.TextXAlignment.Left
-	subtitle.Parent = main
+	subtitle.Parent = titleBar
 
-	-- Dragging Logic
+	-- Control Buttons
+	local function createTopButton(text, offset)
+		local btn = Instance.new("TextButton")
+		btn.Text = text
+		btn.Font = Enum.Font.GothamBold
+		btn.TextSize = 14
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		btn.BackgroundColor3 = Color3.fromRGB(35, 35, 55)
+		btn.Size = UDim2.new(0, 30, 0, 30)
+		btn.Position = UDim2.new(1, -offset, 0.5, 0)
+		btn.AnchorPoint = Vector2.new(1, 0.5)
+		btn.BorderSizePixel = 0
+		btn.Parent = titleBar
+
+		local corner = Instance.new("UICorner", btn)
+		corner.CornerRadius = UDim.new(0, 6)
+
+		return btn
+	end
+
+	local closeBtn = createTopButton("X", 10)
+	local minimizeBtn = createTopButton("_", 50)
+	local restoreBtn = createTopButton("☐", 90)
+
+	-- Button functionality
+	closeBtn.MouseButton1Click:Connect(function()
+		screenGui:Destroy()
+	end)
+
+	minimizeBtn.MouseButton1Click:Connect(function()
+		main.Visible = false -- optionally toggle this elsewhere
+	end)
+
+	local originalSize = main.Size
+	local originalPosition = main.Position
+	local restored = true
+
+	restoreBtn.MouseButton1Click:Connect(function()
+		if restored then
+			main.Size = UDim2.new(0, 300, 0, 200)
+			restoreBtn.Text = "🗖"
+		else
+			main.Size = originalSize
+			main.Position = originalPosition
+			restoreBtn.Text = "☐"
+		end
+		restored = not restored
+	end)
+
+	-- Dragging logic (titleBar only)
 	local dragging, dragInput, dragStart, startPos
-
-	main.InputBegan:Connect(function(input)
+	titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			dragging = true
 			dragStart = input.Position
@@ -132,7 +131,7 @@ end)
 		end
 	end)
 
-	main.InputChanged:Connect(function(input)
+	titleBar.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			dragInput = input
 		end
