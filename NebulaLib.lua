@@ -18,6 +18,68 @@ function Nebula:CreateWindow(settings)
 	main.ClipsDescendants = true
 	main.Parent = screenGui
 
+	-- Add this inside your CreateWindow function, right after creating `main`:
+
+local topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, 0, 0, 40)
+topBar.BackgroundTransparency = 1
+topBar.Parent = main
+
+-- Button base styling helper
+local function createTopButton(name, symbol, position)
+	local btn = Instance.new("TextButton")
+	btn.Name = name
+	btn.Text = symbol
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 14
+	btn.TextColor3 = Color3.fromRGB(200, 200, 255)
+	btn.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+	btn.Size = UDim2.new(0, 30, 0, 30)
+	btn.Position = position
+	btn.AnchorPoint = Vector2.new(1, 0.5)
+	btn.BackgroundTransparency = 0.1
+	btn.BorderSizePixel = 0
+	btn.AutoButtonColor = true
+	btn.Parent = topBar
+
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 6)
+
+	return btn
+end
+
+-- Create the buttons
+local padding = 10
+local closeBtn = createTopButton("CloseButton", "X", UDim2.new(1, -padding, 0.5, 0))
+local minimizeBtn = createTopButton("MinimizeButton", "_", UDim2.new(1, -padding - 35, 0.5, 0))
+local restoreBtn = createTopButton("RestoreButton", "☐", UDim2.new(1, -padding - 70, 0.5, 0))
+
+-- Functionality
+closeBtn.MouseButton1Click:Connect(function()
+	main.Visible = false -- or screenGui:Destroy() to fully close
+end)
+
+minimizeBtn.MouseButton1Click:Connect(function()
+	main.Visible = false -- optional: toggle button elsewhere to show again
+end)
+
+local originalSize = main.Size
+local originalPosition = main.Position
+local isRestored = true
+
+restoreBtn.MouseButton1Click:Connect(function()
+	if isRestored then
+		main.Size = UDim2.new(0, 300, 0, 200)
+		restoreBtn.Text = "🗖" -- visually indicate "maximize"
+	else
+		main.Size = originalSize
+		main.Position = originalPosition
+		restoreBtn.Text = "☐" -- back to restore icon
+	end
+	isRestored = not isRestored
+end)
+
 	local uicorner = Instance.new("UICorner", main)
 	uicorner.CornerRadius = UDim.new(0, 12)
 
